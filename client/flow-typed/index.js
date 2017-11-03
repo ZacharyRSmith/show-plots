@@ -6,7 +6,11 @@ declare type EpisodeT = {
   Title: string,
 };
 declare type SeasonT = {
-  Episodes: EpisodeT[]
+  Episodes: EpisodeT[],
+  Response: 'True' | string,
+  Season: string, // stringified number. 1th-indexed.
+  Title: string,
+  totalSeasons: string // stringified number
 };
 declare type ShowT = {
   name: string

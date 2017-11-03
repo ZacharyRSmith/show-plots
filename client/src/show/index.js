@@ -8,6 +8,10 @@ import range from 'lodash/range';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
+
 import Episode from './Episode';
 import { getGraphHeight, getPointHeight } from './utilities';
 import seasons from '../graph/scaffoldData';
@@ -26,7 +30,8 @@ const leftPadding = '10px';
 class Show extends Component {
   state = {
     isTrendView: true,
-    seasons
+    seasons,
+    seasonViewNum: 0
   };
 
   constructor(props: PropsT) {
@@ -67,6 +72,46 @@ class Show extends Component {
 
     return(
       <div style={this.props.style ? this.props.style : {}}>
+        {/* TODO make width dynamic */}
+        <Drawer
+          containerStyle={{ backgroundColor: 'black', opacity: 0.8 }}
+          docked={false}
+          disableSwipeToOpen
+          width={'66%'}
+          open={!isTrendView}
+          onRequestChange={() => this.setState(prevState => ({ isTrendView: !prevState.isTrendView }))}
+          style={{ backgroundColor: 'black' }}
+        >
+          <div style={{ alignItems: 'center', color: 'white', display: 'flex', flexDirection: 'column' }}>
+            <h2>{this.state.seasons[this.state.seasonViewNum].Title}</h2>
+            <div>Season {this.state.seasons[this.state.seasonViewNum].Season} of {this.state.seasons[this.state.seasonViewNum].totalSeasons}</div>
+            <p>Click on episodes to see more</p>
+          </div>
+          <div style={{ position: 'relative' }}>
+            <div style={{ color: 'white', position: 'absolute', top: '-20px' }}>Episode ratings</div>
+            {range(0, 10).map(i => (
+              <div className='line' style={{
+                height: '1px',
+                backgroundColor: 'white',
+                color: 'white',
+                top: (i * getPointHeight()) + 'px',
+                position: 'relative'
+              }}>{`${String(10 - i)}/10`}</div>
+            ))}
+            <div
+              style={{ display: 'flex', flexDirection: 'row' }}
+            >
+              {this.state.seasons[this.state.seasonViewNum].Episodes.map(episode =>
+              <Episode
+                episode={episode}
+                isTrendView={isTrendView}
+                numEpisodes={numEpisodes}
+                season={this.state.seasons[this.state.seasonViewNum]}
+              />
+              )}
+            </div>
+          </div>
+        </Drawer>
 {/*        <div style={{ display: 'flex', flexDirection: 'row' }}>
           {show && <RaisedButton disabled label={show.name} />}
           <RaisedButton label={isTrendView ? "Detail view" : "Trend view"} onClick={this.toggleView} />
@@ -91,8 +136,7 @@ class Show extends Component {
                 />
               </RadioButtonGroup>
               <ToolbarSeparator style={{ marginRight: '24px' }} />
-              Click on episodes when in<br/>
-              "Details" view to see more
+              Click on a season to see more
             </ToolbarGroup>
           </Toolbar>
         </div>
@@ -123,7 +167,7 @@ class Show extends Component {
           </div>
         </div>
         <div id="graph" style={{ height: `${getGraphHeight()}px`, marginTop: '16px', padding: `0 ${leftPadding}`, position: 'relative' }}>
-        {isTrendView && <div style={{ color: 'white', position: 'absolute', top: '-20px' }}>Episode Ratings</div>}
+        {isTrendView && <div style={{ color: 'white', position: 'absolute', top: '-40px' }}>Episode ratings for season...</div>}
         {!isTrendView
         ?
         null
@@ -139,11 +183,14 @@ class Show extends Component {
         ))}
           <div
             className={isTrendView ? 'clickable' : ''}
-            onClick={isTrendView ? this.toggleView : () => {}}
             style={{ display: 'flex', flexDirection: 'row', height: '100%', left: leftPadding, position: 'absolute', top: 0 }}
           >
             {this.state.seasons.map(season =>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div
+              onClick={() => this.setState({ isTrendView: false, seasonViewNum: Number(season.Season) - 1 /* make it 0th-indexed*/ })}
+              style={{ display: 'flex', flexDirection: 'row' }}
+            >
+              <span style={{ color: 'aliceblue', position: 'absolute', top: '-20px' }}>{season.Season}</span>
               {season.Episodes.map(episode =>
               <Episode
                 episode={episode}
