@@ -1,0 +1,30 @@
+{
+  "name": "show-plots-server",
+  "version": "0.1.1",
+  "private": true,
+  "devDependencies": {
+    "flow": "^0.2.3",
+    "flow-bin": "^0.56.0",
+    "flow-typed": "^2.1.5",
+    "jest": "20.0.4"
+  },
+  "TODO": "use these dependencies in production, so we don't have to duplicate in root package.json",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "lodash": "^4.17.4",
+    "request-promise-native": "^1.0.5"
+  },
+  "engines": {
+    "node": "^7.10.0"
+  },
+  "scripts": {
+    "flow": "flow",
+    "flow-typed": "flow-typed",
+    "start": "node .",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

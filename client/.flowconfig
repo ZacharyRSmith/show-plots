@@ -1,0 +1,10 @@
+[ignore]
+.*/node_modules/eslint-plugin-jsx-a11y/src/rules/media-has-caption
+.*/node_modules/promise/index.js.flow
+.*/node_modules/react-event-listener/src/index.js
+
+[include]
+
+[libs]
+
+[options]
