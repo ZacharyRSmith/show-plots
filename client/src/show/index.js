@@ -77,25 +77,27 @@ class Show extends Component {
           containerStyle={{ backgroundColor: 'black', opacity: 0.8 }}
           docked={false}
           disableSwipeToOpen
-          width={'66%'}
+          width={'100%'}
           open={!isTrendView}
           onRequestChange={() => this.setState(prevState => ({ isTrendView: !prevState.isTrendView }))}
           style={{ backgroundColor: 'black' }}
         >
           <div style={{ alignItems: 'center', color: 'white', display: 'flex', flexDirection: 'column' }}>
+            <div onClick={() => this.setState({ isTrendView: true })}>{'< to show view'}</div>
             <h2>{this.state.seasons[this.state.seasonViewNum].Title}</h2>
             <div>Season {this.state.seasons[this.state.seasonViewNum].Season} of {this.state.seasons[this.state.seasonViewNum].totalSeasons}</div>
             <p>Click on episodes to see more</p>
           </div>
-          <div style={{ position: 'relative' }}>
+          <div style={{ height: '100%', overflowX: 'scroll', position: 'relative' }}>
             <div style={{ color: 'white', position: 'absolute', top: '-20px' }}>Episode ratings</div>
             {range(0, 10).map(i => (
               <div className='line' style={{
                 height: '1px',
                 backgroundColor: 'white',
                 color: 'white',
-                top: (i * getPointHeight()) + 'px',
-                position: 'relative'
+                top: (i * getPointHeight() + 156) + 'px',
+                position: 'fixed',
+                width: '100%'
               }}>{`${String(10 - i)}/10`}</div>
             ))}
             <div
@@ -162,8 +164,7 @@ class Show extends Component {
               />
             </RadioButtonGroup>
             <hr style={{ width: '100%' }}/>
-            Click on episodes when in<br/>
-            "Details" view to see more
+            Click on a season to see more
           </div>
         </div>
         <div id="graph" style={{ height: `${getGraphHeight()}px`, marginTop: '16px', padding: `0 ${leftPadding}`, position: 'relative' }}>
