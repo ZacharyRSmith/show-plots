@@ -16,11 +16,21 @@ if (NODE_ENV === 'production') {
 
 app.get('/api/episode-ratings', (req, res) => {
   const { title } = req.query;
+  const addMissingEps = (season) => {
+    const epsMap = new Map(season.Episodes.map(ep => [parseInt(ep.Episode, 10), ep]));
+    const latestEp = parseInt(season.Episodes.slice(-1)[0].Episode, 10);
+    const newEps = [];
+    for (let i = 0; i < latestEp; i++) {
+      newEps.push(epsMap.get(i + 1) || { Title: 'N/A', Released: 'N/A', Episode: String(i + 1), imdbRating: 'N/A' });
+    }
+    season.Episodes = newEps;
+    return season;
+  };
 
   TVShow.fetchImdbData({ title })
     .then(({ imdbID, totalSeasons }) =>
       TVShow.fetchEpisodeRatings({ imdbID, totalSeasons: Number(totalSeasons) }))
-    .then(seasons => res.json(seasons.filter(s => !!s)))
+    .then(seasons => res.json(seasons.filter(s => !!s).map(addMissingEps)))
     .catch(() => res.sendStatus(500));
 });
 
